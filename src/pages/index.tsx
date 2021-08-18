@@ -1,9 +1,10 @@
 import React from 'react'
+import Navbar from '../components/Navbar'
 
 interface PropsIF {}
 
 const Index: React.FC<PropsIF> = () => {
-  return <div>Hello world</div>
+  return <Navbar></Navbar>
 }
 
 export default Index
