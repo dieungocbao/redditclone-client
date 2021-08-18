@@ -93,18 +93,42 @@ export type UsernamePasswordInput = {
   password: Scalars['String'];
 };
 
+export type LoginMutationVariables = Exact<{
+  input: UsernamePasswordInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', _id: number, username: string }> } };
+
 export type RegisterMutationVariables = Exact<{
-  username: Scalars['String'];
-  password: Scalars['String'];
+  input: UsernamePasswordInput;
 }>;
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>>, user?: Maybe<{ __typename?: 'User', _id: number, username: string }> } };
 
 
+export const LoginDocument = gql`
+    mutation Login($input: UsernamePasswordInput!) {
+  login(input: $input) {
+    errors {
+      field
+      message
+    }
+    user {
+      _id
+      username
+    }
+  }
+}
+    `;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
 export const RegisterDocument = gql`
-    mutation Register($username: String!, $password: String!) {
-  register(input: {username: $username, password: $password}) {
+    mutation Register($input: UsernamePasswordInput!) {
+  register(input: $input) {
     errors {
       field
       message
