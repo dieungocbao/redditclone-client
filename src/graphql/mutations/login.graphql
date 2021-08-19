@@ -1,12 +1,11 @@
-mutation Login($input: UsernamePasswordInput!){
-  login(input: $input) {
-    errors{
+mutation Login($usernameOrEmail: String!, $password: String!) {
+  login(usernameOrEmail: $usernameOrEmail, password: $password) {
+    errors {
       field
       message
     }
     user {
-      _id
-      username
+      ...RegularUser
     }
   }
 }
