@@ -2,10 +2,13 @@ import { cacheExchange } from "@urql/exchange-graphcache"
 import { debugExchange, Exchange, fetchExchange } from "urql"
 import { pipe, tap } from "wonka"
 import {
+  CreatePostMutation,
   LoginMutation,
   LogoutMutation,
   MeDocument,
   MeQuery,
+  PostsDocument,
+  PostsQuery,
   RegisterMutation,
 } from "../generated/graphql"
 import { betterUpdateQuery } from "../utils/betterUpdateQuery"
@@ -17,7 +20,6 @@ const errorExchange: Exchange =
     return pipe(
       forward(ops$),
       tap(({ error }) => {
-        console.log(error)
         if (error?.message.toLowerCase().includes("access denied")) {
           Router.replace("/login")
         }
@@ -73,6 +75,22 @@ export const createUrqlClient = (ssrExchange: any) => ({
               } else {
                 return {
                   me: result.register.user,
+                }
+              }
+            }
+          )
+        },
+        createPost: (_result, args, cache, info) => {
+          betterUpdateQuery<PostsQuery, PostsQuery>(
+            cache,
+            { query: PostsDocument },
+            _result,
+            (result, query) => {
+              if (!result.posts) {
+                return query
+              } else {
+                return {
+                  posts: result.posts,
                 }
               }
             }

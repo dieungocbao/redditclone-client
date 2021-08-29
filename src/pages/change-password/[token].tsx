@@ -11,7 +11,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient"
 import NextLink from "next/link"
 import Layout from "../../components/Layout"
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+const ChangePassword: NextPage = () => {
   const router = useRouter()
   const [, changePassword] = useChangepasswordMutation()
   const [tokenError, setTokenError] = useState("")
@@ -24,7 +24,7 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
             setErrors({ confirmPassword: "Password do not match" })
           } else {
             const response = await changePassword({
-              token,
+              token: typeof router.query.token === 'string' ?  router.query.token: "",
               newPassword: values.newPassword,
             })
             if (response.data?.changePassword.errors) {
@@ -78,12 +78,6 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
       </Formik>
     </Layout>
   )
-}
-
-ChangePassword.getInitialProps = ({ query }) => {
-  return {
-    token: query.token as string,
-  }
 }
 
 export default withUrqlClient(createUrqlClient)(ChangePassword)
