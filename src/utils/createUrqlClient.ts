@@ -1,5 +1,6 @@
-import { createClient, debugExchange, fetchExchange } from "urql"
 import { cacheExchange } from "@urql/exchange-graphcache"
+import { debugExchange, Exchange, fetchExchange } from "urql"
+import { pipe, tap } from "wonka"
 import {
   LoginMutation,
   LogoutMutation,
@@ -8,6 +9,21 @@ import {
   RegisterMutation,
 } from "../generated/graphql"
 import { betterUpdateQuery } from "../utils/betterUpdateQuery"
+import Router from "next/router"
+
+const errorExchange: Exchange =
+  ({ forward }) =>
+  (ops$) => {
+    return pipe(
+      forward(ops$),
+      tap(({ error }) => {
+        console.log(error)
+        if (error?.message.toLowerCase().includes("access denied")) {
+          Router.replace("/login")
+        }
+      })
+    )
+  }
 
 export const createUrqlClient = (ssrExchange: any) => ({
   url: "http://localhost:4000/graphql",
@@ -64,6 +80,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
         },
       },
     }),
+    errorExchange,
     ssrExchange,
     fetchExchange,
   ],

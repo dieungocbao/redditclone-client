@@ -4,7 +4,7 @@ import { withUrqlClient } from "next-urql"
 import { useRouter } from "next/router"
 import React from "react"
 import InputField from "../components/InputField"
-import Wrapper from "../components/Wrapper"
+import Layout from "../components/Layout"
 import { useCreatePostMutation } from "../generated/graphql"
 import { createUrqlClient } from "../utils/createUrqlClient"
 
@@ -14,20 +14,12 @@ const CreatePost: React.FC<CreatePostProps> = () => {
   const router = useRouter()
   const [, createPost] = useCreatePostMutation()
   return (
-    <Wrapper variant='small'>
+    <Layout variant='small'>
       <Formik
         initialValues={{ title: "", text: "" }}
-        onSubmit={async (values, { setErrors }) => {
-          const response = await createPost({ input: values })
-          if (response.error.message) {
-            // toast({
-            //   title: "Account created.",
-            //   description: "We've created your account for you.",
-            //   status: "success",
-            //   duration: 9000,
-            //   isClosable: true,
-            // })
-          } else if (response.data?.createPost._id) {
+        onSubmit={async (values) => {
+          const { error } = await createPost({ input: values })
+          if (!error) {
             router.push("/")
           }
         }}
@@ -54,7 +46,7 @@ const CreatePost: React.FC<CreatePostProps> = () => {
           </Form>
         )}
       </Formik>
-    </Wrapper>
+    </Layout>
   )
 }
 
