@@ -1,6 +1,6 @@
-import React from "react"
-import Navbar from "./Navbar"
-import Wrapper, { WrapperVariant } from "./Wrapper"
+import React from 'react'
+import Navbar from './Navbar'
+import Wrapper, { WrapperVariant } from './Wrapper'
 
 interface LayoutProps {
   variant?: WrapperVariant
