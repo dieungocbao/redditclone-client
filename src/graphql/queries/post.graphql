@@ -8,6 +8,10 @@ query Posts($limit: Int!, $cursor: String) {
       points
       textSnippet
       createdAt
+      creator {
+        _id
+        username
+      }
     }
   }
 }

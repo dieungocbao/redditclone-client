@@ -30,6 +30,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   changePassword: UserResponse;
+  vote: Scalars['Boolean'];
 };
 
 
@@ -70,6 +71,12 @@ export type MutationChangePasswordArgs = {
   token: Scalars['String'];
 };
 
+
+export type MutationVoteArgs = {
+  value: Scalars['Int'];
+  postId: Scalars['Int'];
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   posts: Array<Post>;
@@ -82,11 +89,11 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
-  creatorId: Scalars['Float'];
+  creatorId: Scalars['Int'];
+  creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   textSnippet: Scalars['String'];
-  createdBy: User;
 };
 
 export type PostInput = {
@@ -192,7 +199,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', _id: number, title: string, text: string, points: number, textSnippet: string, createdAt: string }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', _id: number, title: string, text: string, points: number, textSnippet: string, createdAt: string, creator: { __typename?: 'User', _id: number, username: string } }> } };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -307,6 +314,10 @@ export const PostsDocument = gql`
       points
       textSnippet
       createdAt
+      creator {
+        _id
+        username
+      }
     }
   }
 }

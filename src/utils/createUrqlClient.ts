@@ -11,6 +11,8 @@ import {
   LogoutMutation,
   MeDocument,
   MeQuery,
+  PostsDocument,
+  PostsQuery,
   RegisterMutation,
 } from '../generated/graphql'
 import { betterUpdateQuery } from '../utils/betterUpdateQuery'
@@ -53,7 +55,6 @@ Resolver<any, any, any> => {
       if (!_hasMore) {
         hasMore = _hasMore as boolean
       }
-      console.log(hasMore, data)
       results.push(...data)
     })
 
@@ -126,22 +127,15 @@ export const createUrqlClient = (ssrExchange: any) => ({
             }
           )
         },
-        // createPost: (_result, args, cache, info) => {
-        //   betterUpdateQuery<PostsQuery, PostsQuery>(
-        //     cache,
-        //     { query: PostsDocument },
-        //     _result,
-        //     (result, query) => {
-        //       if (!result.posts) {
-        //         return query
-        //       } else {
-        //         return {
-        //           posts: result.posts,
-        //         }
-        //       }
-        //     }
-        //   )
-        // },
+        createPost: (_result, args, cache, info) => {
+          const allFields = cache.inspectFields('Query')
+          const fieldInfos = allFields.filter(
+            (info) => info.fieldName === 'posts'
+          )
+          fieldInfos.forEach((fi) => {
+            cache.invalidate('Query', 'posts', fi.arguments || {})
+          })
+        },
       },
     }),
     errorExchange,

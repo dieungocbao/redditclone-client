@@ -10,7 +10,7 @@ import { Button, Flex, Heading, Stack } from '@chakra-ui/react'
 interface PropsIF {}
 
 const Index: React.FC<PropsIF> = () => {
-  const [variables, setVariables] = useState({ limit: 5, cursor: null })
+  const [variables, setVariables] = useState({ limit: 10, cursor: null })
   const [{ data, fetching }] = usePostsQuery({
     variables,
   })
@@ -33,7 +33,10 @@ const Index: React.FC<PropsIF> = () => {
             {data.posts.posts.map((p) => (
               <Box key={p._id} p={5} shadow="md" borderWidth="1px">
                 <Heading fontSize="xl">{p.title}</Heading>
-                <Text mt={4}>{p.textSnippet}</Text>
+                <Text mt={0.5} fontStyle="italic" color="gray" fontSize="md">
+                  posted by {p.creator.username}
+                </Text>
+                <Text mt={2}>{p.textSnippet}</Text>
               </Box>
             ))}
           </Stack>

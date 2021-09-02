@@ -20,8 +20,8 @@ const CreatePost: React.FC<CreatePostProps> = () => {
         onSubmit={async (values, { resetForm }) => {
           const { error } = await createPost({ input: values })
           if (!error) {
-            // router.push('/')
             resetForm()
+            router.push('/')
           }
         }}
       >
