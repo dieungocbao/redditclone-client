@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import NextLink from 'next/link'
 import { Box, Text } from '@chakra-ui/layout'
 import { Button, Flex, Heading, Stack } from '@chakra-ui/react'
+import UpdootSection from '../components/UpdootSection'
 
 interface PropsIF {}
 
@@ -31,13 +32,16 @@ const Index: React.FC<PropsIF> = () => {
         ) : (
           <Stack spacing={8}>
             {data.posts.posts.map((p) => (
-              <Box key={p._id} p={5} shadow="md" borderWidth="1px">
-                <Heading fontSize="xl">{p.title}</Heading>
-                <Text mt={0.5} fontStyle="italic" color="gray" fontSize="md">
-                  posted by {p.creator.username}
-                </Text>
-                <Text mt={2}>{p.textSnippet}</Text>
-              </Box>
+              <Flex key={p._id} p={5} shadow="md" borderWidth="1px">
+                <UpdootSection post={p} />
+                <Box>
+                  <Heading fontSize="xl">{p.title}</Heading>
+                  <Text mt={0.5} fontStyle="italic" color="gray" fontSize="md">
+                    posted by {p.creator.username}
+                  </Text>
+                  <Text mt={2}>{p.textSnippet}</Text>
+                </Box>
+              </Flex>
             ))}
           </Stack>
         )}
