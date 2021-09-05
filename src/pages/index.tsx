@@ -20,12 +20,6 @@ const Index: React.FC<PropsIF> = () => {
   }
   return (
     <Layout>
-      <Flex align="center">
-        <Heading>LiReddit</Heading>
-        <Button ml="auto" colorScheme="teal">
-          <NextLink href="/create-post">Create post</NextLink>
-        </Button>
-      </Flex>
       <Box mt={8}>
         {!data && fetching ? (
           <Box>Loading...</Box>
@@ -35,7 +29,11 @@ const Index: React.FC<PropsIF> = () => {
               <Flex key={p._id} p={5} shadow="md" borderWidth="1px">
                 <UpdootSection post={p} />
                 <Box>
-                  <Heading fontSize="xl">{p.title}</Heading>
+                  <NextLink href={`/post/[id]`} as={`/post/${p._id}`}>
+                    <Heading fontSize="xl" cursor="pointer">
+                      {p.title}
+                    </Heading>
+                  </NextLink>
                   <Text mt={0.5} fontStyle="italic" color="gray" fontSize="md">
                     posted by {p.creator.username}
                   </Text>
