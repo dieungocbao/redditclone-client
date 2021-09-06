@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
-import { withUrqlClient } from 'next-urql'
-import { createUrqlClient } from '../utils/createUrqlClient'
-import { useDeletePostMutation, usePostsQuery } from '../generated/graphql'
-import Layout from '../components/Layout'
-import NextLink from 'next/link'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { Box, Text } from '@chakra-ui/layout'
 import { Button, Flex, Heading, IconButton, Stack } from '@chakra-ui/react'
+import { withUrqlClient } from 'next-urql'
+import NextLink from 'next/link'
+import React, { useState } from 'react'
+import Layout from '../components/Layout'
 import UpdootSection from '../components/UpdootSection'
-import { DeleteIcon } from '@chakra-ui/icons'
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from '../generated/graphql'
+import { createUrqlClient } from '../utils/createUrqlClient'
 
 interface PropsIF {}
 
@@ -16,6 +20,7 @@ const Index: React.FC<PropsIF> = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables,
   })
+  const [{ data: meData }] = useMeQuery()
   const [, deletePost] = useDeletePostMutation()
   if (!fetching && !data) {
     return <Box>You got query failed for some reason</Box>
@@ -46,15 +51,31 @@ const Index: React.FC<PropsIF> = () => {
                       posted by {p.creator.username}
                     </Text>
                     <Text mt={2}>{p.textSnippet}</Text>
-                    <Flex mt={2}>
-                      <Box ml="auto">
-                        <DeleteIcon
-                          color="tomato"
-                          cursor="pointer"
-                          onClick={() => deletePost({ id: p._id })}
-                        />
-                      </Box>
-                    </Flex>
+                    {meData?.me?._id !== p.creatorId ? null : (
+                      <Flex mt={2}>
+                        <Box ml="auto">
+                          <NextLink
+                            href="/post/edit/[id]"
+                            as={`/post/edit/${p._id}`}
+                          >
+                            <IconButton
+                              colorScheme="blackAlpha"
+                              aria-label="Edit Post"
+                              icon={<EditIcon color="blue" />}
+                            />
+                          </NextLink>
+                          <IconButton
+                            ml={4}
+                            colorScheme="blackAlpha"
+                            aria-label="Edit Post"
+                            icon={
+                              <DeleteIcon color="tomato" cursor="pointer" />
+                            }
+                            onClick={() => deletePost({ id: p._id })}
+                          />
+                        </Box>
+                      </Flex>
+                    )}
                   </Box>
                 </Flex>
               )

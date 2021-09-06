@@ -6,6 +6,7 @@ fragment PostSnippet on Post {
   points
   textSnippet
   voteStatus
+  creatorId
   creator {
     _id
     username
