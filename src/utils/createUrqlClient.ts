@@ -1,4 +1,4 @@
-import { cacheExchange, Resolver } from '@urql/exchange-graphcache'
+import { cacheExchange, Resolver, Cache } from '@urql/exchange-graphcache'
 import {
   dedupExchange,
   Exchange,
@@ -68,6 +68,14 @@ Resolver<any, any, any> => {
   }
 }
 
+function invalidateAllPosts(cache: Cache) {
+  const allFields = cache.inspectFields('Query')
+  const fieldInfos = allFields.filter((info) => info.fieldName === 'posts')
+  fieldInfos.forEach((fi) => {
+    cache.invalidate('Query', 'posts', fi.arguments || {})
+  })
+}
+
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = ''
   if (isServer()) {
@@ -117,6 +125,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                   }
                 }
               )
+              invalidateAllPosts(cache)
             },
             register: (_result, args, cache, info) => {
               betterUpdateQuery<RegisterMutation, MeQuery>(
@@ -135,13 +144,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
               )
             },
             createPost: (_result, args, cache, info) => {
-              const allFields = cache.inspectFields('Query')
-              const fieldInfos = allFields.filter(
-                (info) => info.fieldName === 'posts'
-              )
-              fieldInfos.forEach((fi) => {
-                cache.invalidate('Query', 'posts', fi.arguments || {})
-              })
+              invalidateAllPosts(cache)
             },
             vote: (_result, args, cache, info) => {
               const { postId, value } = args as VoteMutationVariables
