@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         </NextLink>
         <Box mr="2">{data.me.username}</Box>
         <Button
-          onClick={() => logout()}
+          onClick={async () => await logout()}
           isLoading={logoutFetching}
           variant="link"
         >
